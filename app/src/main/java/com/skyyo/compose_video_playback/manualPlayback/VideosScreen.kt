@@ -40,10 +40,10 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
         if (playingItemIndex == null) {
             exoPlayer.pause()
         } else {
-            exoPlayer.playWhenReady = true
             val video = videos[playingItemIndex!!]
             exoPlayer.setMediaItem(MediaItem.fromUri(video.mediaUrl), video.lastPlayedPosition)
             exoPlayer.prepare()
+            exoPlayer.playWhenReady = true
         }
         snapshotFlow {
             listState.visibleAreaContainsItem(playingItemIndex, videos)
