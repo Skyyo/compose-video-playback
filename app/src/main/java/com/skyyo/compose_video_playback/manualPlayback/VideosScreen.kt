@@ -36,6 +36,14 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
     val playingItemIndex by viewModel.currentlyPlayingIndex.observeAsState()
     val isCurrentItemVisible = remember { mutableStateOf(false) }
 
+    LaunchedEffect(Unit) {
+        snapshotFlow {
+            listState.visibleAreaContainsItem(playingItemIndex, videos)
+        }.distinctUntilChanged().collect {
+            isCurrentItemVisible.value = listState.visibleAreaContainsItem(playingItemIndex, videos)
+        }
+    }
+
     LaunchedEffect(playingItemIndex) {
         if (playingItemIndex == null) {
             exoPlayer.pause()
@@ -44,12 +52,6 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
             exoPlayer.setMediaItem(MediaItem.fromUri(video.mediaUrl), video.lastPlayedPosition)
             exoPlayer.prepare()
             exoPlayer.playWhenReady = true
-        }
-        snapshotFlow {
-            listState.visibleAreaContainsItem(playingItemIndex, videos)
-        }.distinctUntilChanged().collect {
-            isCurrentItemVisible.value = listState.visibleAreaContainsItem(playingItemIndex, videos)
-
         }
     }
 
