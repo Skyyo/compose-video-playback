@@ -57,7 +57,6 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
     LaunchedEffect(isCurrentItemVisible.value) {
         if (!isCurrentItemVisible.value && playingItemIndex != null) {
             viewModel.onPlayVideoClick(exoPlayer.currentPosition, playingItemIndex!!)
-            exoPlayer.pause()
         }
     }
 
