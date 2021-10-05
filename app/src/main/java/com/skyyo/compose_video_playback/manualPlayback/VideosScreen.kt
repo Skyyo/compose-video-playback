@@ -38,8 +38,8 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {
         snapshotFlow {
             listState.visibleAreaContainsItem(playingItemIndex, videos)
-        }.collect {
-            isCurrentItemVisible.value = listState.visibleAreaContainsItem(playingItemIndex, videos)
+        }.collect { isItemVisible ->
+            isCurrentItemVisible.value = isItemVisible
         }
     }
 
