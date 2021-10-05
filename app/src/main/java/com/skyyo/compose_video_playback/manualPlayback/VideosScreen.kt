@@ -22,7 +22,6 @@ import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
 import com.skyyo.compose_video_playback.VideoItem
 import kotlinx.coroutines.flow.collect
-import kotlinx.coroutines.flow.distinctUntilChanged
 
 @Composable
 fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
@@ -39,7 +38,7 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
     LaunchedEffect(Unit) {
         snapshotFlow {
             listState.visibleAreaContainsItem(playingItemIndex, videos)
-        }.distinctUntilChanged().collect {
+        }.collect {
             isCurrentItemVisible.value = listState.visibleAreaContainsItem(playingItemIndex, videos)
         }
     }
