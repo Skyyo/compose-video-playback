@@ -1,5 +1,6 @@
 package com.skyyo.compose_video_playback.manualPlayback
 
+import android.view.LayoutInflater
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
@@ -20,6 +21,8 @@ import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.google.android.exoplayer2.MediaItem
 import com.google.android.exoplayer2.SimpleExoPlayer
+import com.google.android.exoplayer2.ui.PlayerView
+import com.skyyo.compose_video_playback.R
 import com.skyyo.compose_video_playback.VideoItem
 import kotlinx.coroutines.flow.collect
 
@@ -33,13 +36,13 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
 
     val videos by viewModel.videos.observeAsState(listOf())
     val playingItemIndex by viewModel.currentlyPlayingIndex.observeAsState()
-    val isCurrentItemVisible = remember { mutableStateOf(false) }
+    var isCurrentItemVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         snapshotFlow {
             listState.visibleAreaContainsItem(playingItemIndex, videos)
         }.collect { isItemVisible ->
-            isCurrentItemVisible.value = isItemVisible
+            isCurrentItemVisible = isItemVisible
         }
     }
 
@@ -54,8 +57,8 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
         }
     }
 
-    LaunchedEffect(isCurrentItemVisible.value) {
-        if (!isCurrentItemVisible.value && playingItemIndex != null) {
+    LaunchedEffect(isCurrentItemVisible) {
+        if (!isCurrentItemVisible && playingItemIndex != null) {
             viewModel.onPlayVideoClick(exoPlayer.currentPosition, playingItemIndex!!)
         }
     }
