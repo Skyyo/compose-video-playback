@@ -16,30 +16,29 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.media3.common.MediaItem
+import androidx.media3.exoplayer.ExoPlayer
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
-import com.google.android.exoplayer2.MediaItem
-import com.google.android.exoplayer2.SimpleExoPlayer
 import com.skyyo.compose_video_playback.VideoItem
-import kotlinx.coroutines.flow.collect
 
 @Composable
 fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
     val context = LocalContext.current
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    val exoPlayer = remember(context) { SimpleExoPlayer.Builder(context).build() }
+    val exoPlayer = remember(context) { ExoPlayer.Builder(context).build() }
     val listState = rememberLazyListState()
 
     val videos by viewModel.videos.observeAsState(listOf())
     val playingItemIndex by viewModel.currentlyPlayingIndex.observeAsState()
-    val isCurrentItemVisible = remember { mutableStateOf(false) }
+    var isCurrentItemVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
         snapshotFlow {
             listState.visibleAreaContainsItem(playingItemIndex, videos)
         }.collect { isItemVisible ->
-            isCurrentItemVisible.value = isItemVisible
+            isCurrentItemVisible = isItemVisible
         }
     }
 
@@ -54,8 +53,8 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
         }
     }
 
-    LaunchedEffect(isCurrentItemVisible.value) {
-        if (!isCurrentItemVisible.value && playingItemIndex != null) {
+    LaunchedEffect(isCurrentItemVisible) {
+        if (!isCurrentItemVisible && playingItemIndex != null) {
             viewModel.onPlayVideoClick(exoPlayer.currentPosition, playingItemIndex!!)
         }
     }
@@ -93,11 +92,10 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
             VideoCard(
                 videoItem = video,
                 exoPlayer = exoPlayer,
-                isPlaying = index == playingItemIndex,
-                onClick = {
-                    viewModel.onPlayVideoClick(exoPlayer.currentPosition, index)
-                }
-            )
+                isPlaying = index == playingItemIndex
+            ) {
+                viewModel.onPlayVideoClick(exoPlayer.currentPosition, index)
+            }
         }
     }
 }

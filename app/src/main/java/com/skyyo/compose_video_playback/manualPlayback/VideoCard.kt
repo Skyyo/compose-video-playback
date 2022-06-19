@@ -16,20 +16,18 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
-import coil.annotation.ExperimentalCoilApi
-import com.google.android.exoplayer2.SimpleExoPlayer
+import androidx.media3.exoplayer.ExoPlayer
 import com.skyyo.compose_video_playback.OnClick
 import com.skyyo.compose_video_playback.R
 import com.skyyo.compose_video_playback.VideoItem
 import com.skyyo.compose_video_playback.ui.theme.Shapes
 
-@OptIn(ExperimentalCoilApi::class)
 @Composable
 fun VideoCard(
     modifier: Modifier = Modifier,
     videoItem: VideoItem,
     isPlaying: Boolean,
-    exoPlayer: SimpleExoPlayer,
+    exoPlayer: ExoPlayer,
     onClick: OnClick
 ) {
     val isPlayerUiVisible = remember { mutableStateOf(false) }
@@ -60,7 +58,7 @@ fun VideoCard(
                 modifier = Modifier
                     .align(Alignment.Center)
                     .size(72.dp)
-                    .clip(RoundedCornerShape(percent = 50))
+                    .clip(remember { RoundedCornerShape(percent = 50) })
                     .clickable { onClick() })
         }
     }
