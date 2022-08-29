@@ -16,12 +16,15 @@ import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.ExperimentalLifecycleComposeApi
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
 import androidx.media3.common.MediaItem
 import androidx.media3.exoplayer.ExoPlayer
 import com.google.accompanist.insets.LocalWindowInsets
 import com.google.accompanist.insets.rememberInsetsPaddingValues
 import com.skyyo.compose_video_playback.VideoItem
 
+@OptIn(ExperimentalLifecycleComposeApi::class)
 @Composable
 fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
     val context = LocalContext.current
@@ -30,8 +33,8 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
     val exoPlayer = remember(context) { ExoPlayer.Builder(context).build() }
     val listState = rememberLazyListState()
 
-    val videos by viewModel.videos.observeAsState(listOf())
-    val playingItemIndex by viewModel.currentlyPlayingIndex.observeAsState()
+    val videos by viewModel.videos.collectAsStateWithLifecycle()
+    val playingItemIndex by viewModel.currentlyPlayingIndex.collectAsStateWithLifecycle()
     var isCurrentItemVisible by remember { mutableStateOf(false) }
 
     LaunchedEffect(Unit) {
@@ -65,6 +68,7 @@ fun VideosScreen(viewModel: VideosViewModel = hiltViewModel()) {
             when (event) {
                 Lifecycle.Event.ON_START -> exoPlayer.play()
                 Lifecycle.Event.ON_STOP -> exoPlayer.pause()
+                else -> {}
             }
         }
 

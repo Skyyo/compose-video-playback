@@ -1,17 +1,17 @@
 package com.skyyo.compose_video_playback.manualPlayback
 
-import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import com.skyyo.compose_video_playback.VideoItem
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.MutableStateFlow
 import javax.inject.Inject
 
 
 @HiltViewModel
 class VideosViewModel @Inject constructor() : ViewModel() {
 
-    val videos = MutableLiveData<List<VideoItem>>()
-    val currentlyPlayingIndex = MutableLiveData<Int?>()
+    val videos = MutableStateFlow<List<VideoItem>>(listOf())
+    val currentlyPlayingIndex = MutableStateFlow<Int?>(null)
 
     init {
         populateListWithFakeData()
@@ -70,27 +70,27 @@ class VideosViewModel @Inject constructor() : ViewModel() {
                 "http://commondatastorage.googleapis.com/gtv-videos-bucket/sample/images/TearsOfSteel.jpg"
             ),
         )
-        videos.postValue(testVideos)
+        videos.value = testVideos
     }
 
     fun onPlayVideoClick(playbackPosition: Long, videoIndex: Int) {
         when (currentlyPlayingIndex.value) {
             // video is not playing at the moment
-            null -> currentlyPlayingIndex.postValue(videoIndex)
+            null -> currentlyPlayingIndex.value = videoIndex
             // this video is already playing
             videoIndex -> {
-                currentlyPlayingIndex.postValue(null)
-                videos.value = videos.value!!.toMutableList().also { list ->
+                currentlyPlayingIndex.value = null
+                videos.value = videos.value.toMutableList().also { list ->
                     list[videoIndex] = list[videoIndex].copy(lastPlayedPosition = playbackPosition)
                 }
             }
             // video is playing, and we're requesting new video to play
             else -> {
-                videos.value = videos.value!!.toMutableList().also { list ->
+                videos.value = videos.value.toMutableList().also { list ->
                     list[currentlyPlayingIndex.value!!] =
                         list[currentlyPlayingIndex.value!!].copy(lastPlayedPosition = playbackPosition)
                 }
-                currentlyPlayingIndex.postValue(videoIndex)
+                currentlyPlayingIndex.value = videoIndex
             }
         }
     }

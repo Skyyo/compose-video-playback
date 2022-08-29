@@ -7,12 +7,12 @@ plugins {
 }
 
 android {
-    compileSdk 31
+    compileSdk 33
 
     defaultConfig {
         applicationId "com.skyyo.compose_video_playback"
         minSdk 23
-        targetSdk 31
+        targetSdk 33
         versionCode 1
         versionName "1.0"
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
@@ -24,12 +24,11 @@ android {
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
         }
     }
-    kotlinOptions.useIR = true
     buildFeatures {
         compose true
     }
     composeOptions {
-        kotlinCompilerExtensionVersion compose_version
+        kotlinCompilerExtensionVersion "1.3.0"
     }
     packagingOptions {
         resources {
@@ -40,8 +39,8 @@ android {
 
 dependencies {
 
-    implementation 'androidx.core:core-ktx:1.6.0'
-    implementation 'androidx.appcompat:appcompat:1.3.1'
+    implementation 'androidx.core:core-ktx:1.8.0'
+    implementation 'androidx.appcompat:appcompat:1.5.0'
 
     implementation "androidx.compose.ui:ui:$compose_version"
     implementation "androidx.compose.material:material:$compose_version"
@@ -49,17 +48,19 @@ dependencies {
     implementation "androidx.compose.runtime:runtime-livedata:$compose_version"
     implementation "androidx.compose.runtime:runtime:$compose_version"
 
-    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.4.0-rc01'
-    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.3.1'
+    implementation 'androidx.lifecycle:lifecycle-livedata-ktx:2.6.0-alpha01'
+    implementation 'androidx.lifecycle:lifecycle-runtime-ktx:2.5.1'
+    implementation 'androidx.lifecycle:lifecycle-viewmodel-ktx:2.5.1'
+    implementation "androidx.lifecycle:lifecycle-runtime-compose:2.6.0-alpha01"
 
-    implementation 'com.google.android.material:material:1.4.0'
+    implementation 'com.google.android.material:material:1.6.1'
     implementation "com.google.accompanist:accompanist-insets:0.18.0"
 //    implementation 'com.google.android.exoplayer:exoplayer:2.17.1'
 
-    implementation "androidx.media3:media3-exoplayer:1.0.0-alpha03"
-    implementation "androidx.media3:media3-ui:1.0.0-alpha03"
+    implementation "androidx.media3:media3-exoplayer:1.0.0-beta02"
+    implementation "androidx.media3:media3-ui:1.0.0-beta02"
 
-    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0-alpha03'
+    implementation 'androidx.hilt:hilt-navigation-compose:1.0.0'
     implementation "com.google.dagger:hilt-android:$hilt_version"
     kapt "com.google.dagger:hilt-compiler:$hilt_version"
 

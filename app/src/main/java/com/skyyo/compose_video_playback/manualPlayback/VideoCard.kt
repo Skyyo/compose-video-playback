@@ -7,9 +7,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material.Icon
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,8 +28,8 @@ fun VideoCard(
     exoPlayer: ExoPlayer,
     onClick: OnClick
 ) {
-    val isPlayerUiVisible = remember { mutableStateOf(false) }
-    val isPlayButtonVisible = if (isPlayerUiVisible.value) true else !isPlaying
+    var isPlayerUiVisible by remember { mutableStateOf(false) }
+    val isPlayButtonVisible = if (isPlayerUiVisible) true else !isPlaying
 
     Box(
         modifier = modifier
@@ -42,10 +40,9 @@ fun VideoCard(
     ) {
         if (isPlaying) {
             VideoPlayer(exoPlayer) { uiVisible ->
-                if (isPlayerUiVisible.value) {
-                    isPlayerUiVisible.value = uiVisible
-                } else {
-                    isPlayerUiVisible.value = true
+                isPlayerUiVisible = when {
+                    isPlayerUiVisible -> uiVisible
+                    else -> true
                 }
             }
         } else {
@@ -59,7 +56,8 @@ fun VideoCard(
                     .align(Alignment.Center)
                     .size(72.dp)
                     .clip(remember { RoundedCornerShape(percent = 50) })
-                    .clickable { onClick() })
+                    .clickable(onClick = onClick)
+            )
         }
     }
 }

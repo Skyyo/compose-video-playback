@@ -25,10 +25,17 @@ fun VideoPlayer(
         val layout = LayoutInflater.from(context).inflate(R.layout.video_player, null, false)
         val playerView = layout.findViewById(R.id.playerView) as PlayerView
         playerView.apply {
-            setControllerVisibilityListener { onControllerVisibilityChanged(it == View.VISIBLE) }
+            setControllerVisibilityListener(PlayerView.ControllerVisibilityListener {
+                onControllerVisibilityChanged(it == View.VISIBLE)
+            })
             player = exoPlayer
         }
     }
 
-    AndroidView({ playerView }, Modifier.height(256.dp).background(Color.Black))
+    AndroidView(
+        { playerView },
+        Modifier
+            .height(256.dp)
+            .background(Color.Black)
+    )
 }
